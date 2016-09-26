@@ -23,8 +23,8 @@ pygame.init()
 #PARAMETERS
 square_size = 30
 map_size = 30
-start_square = (5,5)
-goal_square = (3,3)
+start_square = (5,10)
+goal_square = (10,15)
 
 #get cmd params
 if len(sys.argv) == 3:
