@@ -172,6 +172,20 @@ def calculate_cost(g, square_pos):
     fcost = gcost + grid[square_pos[0]][square_pos[1]].Hcost
     return fcost
 
+def check_square(cur_check, square, open_list):
+    if square not in open_list:
+        grid[square[0]][square[1]].Fcost = calculate_cost(normal_move, square)
+        grid[square[0]][square[1]].parent = grid[cur_check[0]][cur_check[1]]
+        print("Right:"+str(grid[square[0]][square[1]].Fcost))
+        open_list.append(square)
+    else:
+        if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[square[0]][square[1]].Gcost:
+            grid[square[0]][square[1]].Fcost = calculate_cost(normal_move, square)
+            print("Down:"+str(grid[square[0]][square[1]].Fcost))
+            grid[square[0]][square[1]].parent = grid[cur_check[0]][cur_check[1]]
+            open_list.remove(square)
+            open_list.append(square)
+
 def path_find(start_square, goal_square):
 
     generate_hcost()
@@ -208,67 +222,19 @@ def path_find(start_square, goal_square):
         #Right check
         if cur_r[0] < map_size:
             if grid[cur_r[0]][cur_r[1]].square_type != Square_Type.obstacle and cur_r not in closed_list:
-
-                if cur_r not in open_list:
-                    grid[cur_r[0]][cur_r[1]].Fcost = calculate_cost(normal_move, cur_r)
-                    grid[cur_r[0]][cur_r[1]].parent = grid[cur_check[0]][cur_check[1]]
-                    print("Right:"+str(grid[cur_r[0]][cur_r[1]].Fcost))
-                    open_list.append(cur_r)
-                else:
-                    if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[cur_r[0]][cur_r[1]].Gcost:
-                        grid[cur_r[0]][cur_r[1]].Fcost = calculate_cost(normal_move, cur_r)
-                        print("Down:"+str(grid[cur_r[0]][cur_r[1]].Fcost))
-                        grid[cur_r[0]][cur_r[1]].parent = grid[cur_check[0]][cur_check[1]]
-                        open_list.remove(cur_r)
-                        open_list.append(cur_r)
+                check_square(cur_check, cur_r, open_list)
         #Left check
         if cur_l[0] >= 0:
             if grid[cur_l[0]][cur_l[1]].square_type != Square_Type.obstacle and cur_l not in closed_list:
-
-                if cur_l not in open_list:
-                    grid[cur_l[0]][cur_l[1]].Fcost = calculate_cost(normal_move, cur_l)
-                    grid[cur_l[0]][cur_l[1]].parent = grid[cur_check[0]][cur_check[1]]
-                    print("Left:"+str(grid[cur_l[0]][cur_l[1]].Fcost))
-                    open_list.append(cur_l)
-                else:
-                    if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[cur_l[0]][cur_l[1]].Gcost:
-                        grid[cur_l[0]][cur_l[1]].Fcost = calculate_cost(normal_move, cur_l)
-                        print("Down:"+str(grid[cur_l[0]][cur_l[1]].Fcost))
-                        grid[cur_l[0]][cur_l[1]].parent = grid[cur_check[0]][cur_check[1]]
-                        open_list.remove(cur_l)
-                        open_list.append(cur_l)
+                check_square(cur_check, cur_l, open_list)
         #Up check
         if cur_u[1] >= 0:
             if grid[cur_u[0]][cur_u[1]].square_type != Square_Type.obstacle and cur_u not in closed_list:
-
-                if cur_u not in open_list:
-                    grid[cur_u[0]][cur_u[1]].Fcost = calculate_cost(normal_move, cur_u)
-                    print("Up:"+str(grid[cur_u[0]][cur_u[1]].Fcost))
-                    grid[cur_u[0]][cur_u[1]].parent = grid[cur_check[0]][cur_check[1]]
-                    open_list.append(cur_u)
-                else:
-                    if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[cur_u[0]][cur_u[1]].Gcost:
-                        grid[cur_u[0]][cur_u[1]].Fcost = calculate_cost(normal_move, cur_u)
-                        print("Down:"+str(grid[cur_u[0]][cur_u[1]].Fcost))
-                        grid[cur_u[0]][cur_u[1]].parent = grid[cur_check[0]][cur_check[1]]
-                        open_list.remove(cur_u)
-                        open_list.append(cur_u)
+                check_square(cur_check, cur_u, open_list)
         #Down check
         if cur_d[1] < map_size:
             if grid[cur_d[0]][cur_d[1]].square_type != Square_Type.obstacle and cur_d not in closed_list:
-
-                if cur_d not in open_list:
-                    grid[cur_d[0]][cur_d[1]].Fcost = calculate_cost(normal_move, cur_d)
-                    print("Down:"+str(grid[cur_d[0]][cur_d[1]].Fcost))
-                    grid[cur_d[0]][cur_d[1]].parent = grid[cur_check[0]][cur_check[1]]
-                    open_list.append(cur_d)
-                else:
-                    if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[cur_d[0]][cur_d[1]].Gcost:
-                        grid[cur_d[0]][cur_d[1]].Fcost = calculate_cost(normal_move, cur_d)
-                        print("Down:"+str(grid[cur_d[0]][cur_d[1]].Fcost))
-                        grid[cur_d[0]][cur_d[1]].parent = grid[cur_check[0]][cur_check[1]]
-                        open_list.remove(cur_d)
-                        open_list.append(cur_d)
+                check_square(cur_check, cur_d, open_list)
 
         if goal_square in open_list:
             path_found = True
