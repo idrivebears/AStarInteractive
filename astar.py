@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 A* implementation
 Alejandro Walls Rancaño
@@ -25,6 +27,8 @@ square_size = 30
 map_size = 30
 start_square = (5,10)
 goal_square = (10,15)
+
+draw_on = False
 
 #get cmd params
 if len(sys.argv) == 3:
@@ -160,7 +164,7 @@ def mod_map(position):
 def generate_hcost():
     for i in range(map_size):
         for j in range(map_size):
-            grid[i][j].Hcost = abs(goal_square[0] - i) + abs(goal_square[1] - j)
+            grid[i][j].Hcost = (abs(goal_square[0] - i) + abs(goal_square[1] - j)) *10
             #print(str(i) + ", " + str(j) + " hcost: " + str(grid[i][j].Hcost))
 
 def calculate_cost(g, square_pos):
@@ -176,12 +180,12 @@ def check_square(cur_check, square, open_list):
     if square not in open_list:
         grid[square[0]][square[1]].Fcost = calculate_cost(normal_move, square)
         grid[square[0]][square[1]].parent = grid[cur_check[0]][cur_check[1]]
-        print("Right:"+str(grid[square[0]][square[1]].Fcost))
+        #print("Right:"+str(grid[square[0]][square[1]].Fcost))
         open_list.append(square)
     else:
         if grid[cur_check[0]][cur_check[1]].Gcost + normal_move < grid[square[0]][square[1]].Gcost:
             grid[square[0]][square[1]].Fcost = calculate_cost(normal_move, square)
-            print("Down:"+str(grid[square[0]][square[1]].Fcost))
+            #print("Down:"+str(grid[square[0]][square[1]].Fcost))
             grid[square[0]][square[1]].parent = grid[cur_check[0]][cur_check[1]]
             open_list.remove(square)
             open_list.append(square)
@@ -189,7 +193,7 @@ def check_square(cur_check, square, open_list):
 def path_find(start_square, goal_square):
 
     generate_hcost()
-    print("Done generating hcosts")
+    #print("Done generating hcosts")
 
     path_found = False
 
@@ -212,7 +216,7 @@ def path_find(start_square, goal_square):
 
         closed_list.append(cur_check)
 
-        print("Checking: " + str(cur_check))
+        #print("Checking: " + str(cur_check))
 
         cur_r = (cur_check[0]+1, cur_check[1])      #square to right
         cur_l = (cur_check[0]-1, cur_check[1])      #square to left
@@ -260,15 +264,22 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if(pygame.mouse.get_pressed()[0]):
+            if pygame.mouse.get_pressed()[0]:
+            	draw_on = True
                 mod_map(pygame.mouse.get_pos())
                 clear_grid(grid)
-            elif(pygame.mouse.get_pressed()[2]):
+            elif pygame.mouse.get_pressed()[2]:
                 clear_grid(grid)
                 path_find(start_square, goal_square)
         elif event.type == pygame.MOUSEMOTION:
             cur_selected[0] = convert_mousepos_to_gridpos(pygame.mouse.get_pos())[0]
             cur_selected[1] = convert_mousepos_to_gridpos(pygame.mouse.get_pos())[1]
+            if draw_on:
+            	mod_map(pygame.mouse.get_pos())
+        elif event.type == pygame.MOUSEBUTTONUP:
+        	if not pygame.mouse.get_pressed()[0]:
+        		draw_on = False
+
 
         screen.fill(WHITE)
         draw_grid(grid)
