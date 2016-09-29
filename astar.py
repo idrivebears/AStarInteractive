@@ -18,6 +18,7 @@ DISCLAIMER:
 
 import pygame
 import sys
+import random
 from enum import Enum
 
 pygame.init()
@@ -68,10 +69,11 @@ class Square(object):
         self.Fcost = 0
         self.Gcost = 0
         self.Hcost = 0
+        self.visited = False
     def __lt__(self, other):
         return self.Fcost < other.Fcost
 
-#Initialize grid
+#Initialize grid to empty
 grid = [[Square() for x in range(map_size)] for y in range(map_size)]
 
 #Set start loc and goal
@@ -260,12 +262,13 @@ def path_find(start_square, goal_square):
 
 #MainLoop
 while True:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
-            	draw_on = True
+                draw_on = True
                 mod_map(pygame.mouse.get_pos())
                 clear_grid(grid)
             elif pygame.mouse.get_pressed()[2]:
@@ -275,7 +278,7 @@ while True:
             cur_selected[0] = convert_mousepos_to_gridpos(pygame.mouse.get_pos())[0]
             cur_selected[1] = convert_mousepos_to_gridpos(pygame.mouse.get_pos())[1]
             if draw_on:
-            	mod_map(pygame.mouse.get_pos())
+                mod_map(pygame.mouse.get_pos())
         elif event.type == pygame.MOUSEBUTTONUP:
         	if not pygame.mouse.get_pressed()[0]:
         		draw_on = False
